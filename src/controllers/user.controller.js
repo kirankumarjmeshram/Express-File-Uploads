@@ -11,7 +11,7 @@ const fs = require("fs");
 
 
 
-router.post("", uploadSingle("profile_pic"), async (req,res)=>{
+router.post("/single", uploadSingle("profile_pic"), async (req,res)=>{
     try{
         const user = await User.create({
             first_name:req.body.first_name,
@@ -46,7 +46,7 @@ router.patch("/:id",uploadSingle("profile_image"),async (req, res) => {
         },{new:true}).lean().exec();
         res.status(200).send(user);
         if(req.file?.path) {
-            fs.unlinkSync(userone.profile_image)
+            fs.unlinkSync(userone.profile_pic)
         }
     } catch (err) {
         res.send(500).json({message: err.message,status:"Failed"});
@@ -56,8 +56,8 @@ router.patch("/:id",uploadSingle("profile_image"),async (req, res) => {
 router.delete("/:id",async (req, res) => {
     try {
         const user=await User.findByIdAndDelete(req.params.id).lean().exec();
-        res.send(user);
-        fs.unlinkSync(user.profile_image);
+        res.status(200).send(user);
+        fs.unlinkSync(user.profile_pic);
     } catch (err) {
         res.send(500).json({message: err.message,status:"Failed"});
     }
